@@ -1,0 +1,9 @@
+function Stats() {
+    return (
+        <div>
+            <h1>Statistics Page</h1>
+        </div>
+    );
+}
+
+export default Stats;
