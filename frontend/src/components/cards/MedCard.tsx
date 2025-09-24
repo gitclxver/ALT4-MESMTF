@@ -1,4 +1,5 @@
 import React from "react";
+import { PlusCircleIcon } from "../../utils/icons";
 
 export interface Medication {
   id: number;
@@ -23,53 +24,46 @@ const MedCard: React.FC<MedCardProps> = ({
   onAddToCart,
 }) => {
   return (
-    <div className="bg-slate-50 border border-slate-300 rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-xs mx-auto transition-transform duration-300 hover:scale-105">
-      <div className="flex flex-col items-center text-center">
+    <div className="bg-white min-w-[350px] max-w-[350px] min-h-[400] max-h-[400px] rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
+      <div className="relative">
         <img
+          className="h-40 w-full object-cover"
           src={
             medication.imageUrl ||
-            "https://via.placeholder.com/150?text=No+Image"
+            `https://placehold.co/400x300/E2E8F0/475569?text=${medication.name}`
           }
           alt={`Image of ${medication.name}`}
-          className="w-24 h-24 rounded-full object-cover mb-4 border-2 border-cyan-600"
         />
-
-        <h2 className="text-lg font-bold text-slate-800">{medication.name}</h2>
-
-        <div className="mt-2 text-center w-full">
-          <p className="text-xs text-slate-600">
-            {medication.dosage} | {medication.form}
-          </p>
-          <p className="text-xs text-slate-600">
-            {medication.brand} | {medication.code}
-          </p>
+        <div
+          className={`absolute top-4 right-3 px-2 py-1 text-xs font-bold text-white rounded-full ${
+            inStock ? "bg-teal-500" : "bg-red-500"
+          }`}
+        >
+          {inStock ? "In Stock" : "Out of Stock"}
         </div>
-
-        <hr className="w-full border-t border-slate-200 my-4" />
-
-        <div className="flex justify-between items-center w-full mt-2">
-          <span className="text-lg font-extrabold text-cyan-600">
+      </div>
+      <div className="p-5">
+        <p className="text-xs font-semibold text-slate-500 uppercase">
+          {medication.brand}
+        </p>
+        <h3 className="text-lg font-bold text-slate-800 truncate">
+          {medication.name}
+        </h3>
+        <p className="text-sm text-slate-600">
+          {medication.dosage} • {medication.form}
+        </p>
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-xl font-extrabold text-cyan-600">
             N${medication.price.toFixed(2)}
-          </span>
-          {inStock ? (
-            <span className="px-2 py-1 bg-teal-500 text-white text-xs font-bold rounded-full">
-              In Stock
-            </span>
-          ) : (
-            <span className="px-2 py-1 bg-slate-400 text-white text-xs font-bold rounded-full">
-              Out of Stock
-            </span>
-          )}
-        </div>
-
-        {inStock && (
+          </p>
           <button
             onClick={() => onAddToCart(medication)}
-            className="mt-4 w-full bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-700 transition-colors"
+            disabled={!inStock}
+            className="flex items-center bg-cyan-100 text-cyan-700 font-semibold py-2 px-4 rounded-lg transition-colors hover:bg-cyan-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
           >
-            Add to Cart
+            <PlusCircleIcon /> Add
           </button>
-        )}
+        </div>
       </div>
     </div>
   );

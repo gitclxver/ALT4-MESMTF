@@ -11,7 +11,6 @@ import Book from './pages/patient/Book';
 import PatientDashboard from './pages/patient/Dashboard';
 import Profile from './pages/patient/Profile';
 import SelfDiagnostic from './pages/patient/SelfDiagnostic';
-import TreatmentPlan from './pages/patient/TreatmentPlan';
 
 import Appointments from './pages/official/Appointments';
 import OfficialDashboard from './pages/official/Dashboard';
@@ -35,7 +34,6 @@ function App() {
         <Route path="/patient-dashboard" element={<PatientDashboard />} />
         <Route path="/patient-record" element={<Profile />} />
         <Route path="/diagnostic" element={<SelfDiagnostic />} />
-        <Route path="/treatment-plan" element={<TreatmentPlan />} />
 
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/official-dashboard" element={<OfficialDashboard />} />

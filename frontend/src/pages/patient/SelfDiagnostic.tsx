@@ -2,6 +2,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { BrainIcon, StethoscopeIcon } from "../../utils/icons";
 
 const symptoms = [
   {
@@ -50,44 +51,7 @@ const symptoms = [
 
 const allSymptoms = symptoms.flatMap((group) => group.symptoms);
 
-const BrainIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-16 w-16 text-cyan-500"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.5}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 01-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 013.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 013.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 01-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.553L16.5 21.75l-.398-1.197a3.375 3.375 0 00-2.455-2.455l-1.197-.398 1.197-.398a3.375 3.375 0 002.455-2.455l.398-1.197.398 1.197a3.375 3.375 0 002.455 2.455l1.197.398-1.197.398a3.375 3.375 0 00-2.455 2.455z"
-    />
-  </svg>
-);
 
-const StethoscopeIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-8 w-8 text-white"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M3.472 19.262l-1.24-.93a.5.5 0 010-.814l3.14-2.355a.5.5 0 01.63 0l1.24.93a.5.5 0 010 .814l-3.14 2.355a.5.5 0 01-.63 0zM12 21a9 9 0 100-18 9 9 0 000 18z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 4v.01M12 8v4m0 4v.01"
-    />
-  </svg>
-);
 
 function SelfDiagnostic() {
   const [diagnosisState, setDiagnosisState] = useState("idle");
@@ -165,7 +129,7 @@ function SelfDiagnostic() {
       result = { diagnosis: "Possible Typhoid Fever", confidence: "Medium" };
     } else if (malariaScore > 0 || typhoidScore > 0) {
       result = {
-        diagnosis: "Symptoms match minor criteria",
+        diagnosis: "Symptoms Match Mild Cases of Malaria or Typhoid",
         confidence: "Low",
       };
     }
@@ -186,7 +150,7 @@ function SelfDiagnostic() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-slate-50 font-sans p-4 sm:p-6 lg:p-8">
+      <div className="min-h-[80vh] bg-slate-50 font-sans p-4 sm:p-6 lg:p-8">
         <div className="container mx-auto">
           {(diagnosisState === "idle" || diagnosisState === "diagnosing") && (
             <section id="ai-doctor" className="transition-opacity duration-500">
