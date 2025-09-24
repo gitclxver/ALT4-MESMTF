@@ -1,264 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MESMTF Login</title>
-    <!-- Use Tailwind CSS for rapid styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Pioneering Health Intelligence for Namibia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            overflow: hidden;
+            background-image: linear-gradient(to bottom right, #e5f1ff, #d6e9f8); /* A fresh, light blue gradient */
         }
-
-        /* Custom CSS to overlay the form on the canvas */
-        .login-container {
-            position: relative;
-            z-index: 10;
-        }
-        
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .form-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-        }
-
-        .input-field {
+        .form-input {
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+            border-color: #3b82f6;
+        }
+        .card-container {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 5px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        .card-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
     </style>
 </head>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
-
-    <!-- The Canvas for the dynamic background animation -->
-    <canvas id="canvas"></canvas>
-
-    <!-- Main login container -->
-    <div class="login-container w-full max-w-sm mx-auto p-4 md:p-8">
-        <div class="form-card rounded-3xl shadow-2xl p-6">
-            <h2 class="text-3xl font-bold text-center text-teal-300 mb-2">MESMTF</h2>
-            <p class="text-center text-gray-200 mb-8">Login to your account</p>
-
-            <!-- Login Form -->
-            <form id="loginForm" class="space-y-6">
-                <!-- Email Input -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-                    <input type="email" id="email" name="email"
-                        class="input-field w-full px-4 py-3 rounded-xl bg-gray-800 text-gray-100 border border-gray-700 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
-                        placeholder="your.email@example.com" required>
-                    <p id="emailError" class="text-xs text-red-400 mt-1 opacity-0 transition-opacity">
-                        Please enter a valid email address.
-                    </p>
+    <!-- Main form container -->
+    <div class="w-full max-w-sm bg-white rounded-2xl p-8 space-y-8 card-container">
+        <!-- Logo/Icon Section -->
+        <div class="flex flex-col items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+            </svg>
+            <h1 class="mt-4 text-3xl font-bold text-gray-800">Pioneering Health</h1>
+            <p class="text-sm text-gray-500">Intelligence for Namibia</p>
+            <p class="mt-2 text-gray-500 text-sm">Sign in to your account</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-6">
+            <!-- Email Input Field with Icon -->
+            <div class="relative">
+                <label for="email" class="sr-only">Email Address</label>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
                 </div>
-
-                <!-- Password Input -->
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                    <input type="password" id="password" name="password"
-                        class="input-field w-full px-4 py-3 rounded-xl bg-gray-800 text-gray-100 border border-gray-700 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
-                        placeholder="••••••••" required>
-                    <p id="passwordError" class="text-xs text-red-400 mt-1 opacity-0 transition-opacity">
-                        Password must be at least 8 characters long.
-                    </p>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit"
-                    class="w-full py-3 px-4 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl text-white font-semibold shadow-lg hover:from-teal-600 hover:to-cyan-700 transition-all duration-300 transform hover:scale-105">
-                    Log In
-                </button>
-            </form>
-
-            <div id="messageBox" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 max-w-sm w-full text-center">
-                    <h3 class="text-2xl font-bold text-green-400 mb-4">Login Successful!</h3>
-                    <p class="text-gray-200">Welcome to MESMTF. You can now proceed to the dashboard.</p>
-                    <button id="closeButton" class="mt-6 py-2 px-6 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-colors">
-                        Close
-                    </button>
-                </div>
+                <input type="email" id="email" name="email" required placeholder="Email Address"
+                       class="mt-1 block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-input">
+                <p id="emailError" class="mt-1 text-xs text-red-500 hidden"></p>
             </div>
-
-            <p class="text-center text-sm text-gray-400 mt-6">
-                Don't have an account? <a href="#" class="text-teal-400 hover:underline">Sign Up</a>
+            
+            <!-- Password Input Field with Icon -->
+            <div class="relative">
+                <label for="password" class="sr-only">Password</label>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2h2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2h2zm2 0h6V7a3 3 0 00-6 0v2z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="password" id="password" name="password" required placeholder="Password"
+                       class="mt-1 block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-input">
+                <p id="passwordError" class="mt-1 text-xs text-red-500 hidden"></p>
+            </div>
+            
+            <button type="submit"
+                    class="w-full py-2 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                Sign In
+            </button>
+        </form>
+        
+        <div class="text-center">
+            <p class="text-sm text-gray-500">Don't have an account? 
+                <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Sign Up</a>
             </p>
         </div>
+        
+        <div id="messageBox" class="hidden text-center p-4 rounded-md text-sm" role="alert"></div>
     </div>
 
     <script>
-        // JavaScript for the dynamic canvas background and form validation
-
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const form = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const emailError = document.getElementById('emailError');
-        const passwordError = document.getElementById('passwordError');
-        const messageBox = document.getElementById('messageBox');
-        const closeButton = document.getElementById('closeButton');
-        const nodes = [];
-        const numNodes = 60;
-        const maxDist = 150;
-
-        // Node class for the canvas animation
-        class Node {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = Math.random() * 0.5 - 0.25;
-                this.vy = Math.random() * 0.5 - 0.25;
-                this.radius = 2;
-                this.color = 'rgba(255, 255, 255, 0.5)';
-            }
-
-            // Method to update node position
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-
-            // Method to draw the node
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-
-        // Initialize the canvas and nodes
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            nodes.length = 0; // Clear existing nodes
-            for (let i = 0; i < numNodes; i++) {
-                nodes.push(new Node(Math.random() * canvas.width, Math.random() * canvas.height));
-            }
-        }
-
-        // Animation loop
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            nodes.forEach(node => {
-                node.update();
-                node.draw();
-            });
-
-            // Draw connections between nodes
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dist = Math.sqrt(Math.pow(nodes[i].x - nodes[j].x, 2) + Math.pow(nodes[i].y - nodes[j].y, 2));
-                    if (dist < maxDist) {
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        const opacity = 1 - (dist / maxDist);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        
-        // --- Form Validation Functions ---
-        function validateEmail(email) {
-            const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            return re.test(String(email).toLowerCase());
-        }
-
-        function validatePassword(password) {
-            return password.length >= 8;
-        }
-
-        // --- Event Listeners ---
-        
-        // Initial setup
-        window.addEventListener('load', initCanvas);
-        window.addEventListener('resize', initCanvas);
-        window.addEventListener('load', animate);
-
-        // Real-time validation feedback on input
-        emailInput.addEventListener('input', () => {
-            const isValid = validateEmail(emailInput.value);
-            if (isValid) {
-                emailError.classList.add('opacity-0');
-                emailInput.classList.remove('border-red-400');
-                emailInput.classList.add('border-teal-400');
-            } else {
-                emailError.classList.remove('opacity-0');
-                emailInput.classList.remove('border-teal-400');
-                emailInput.classList.add('border-red-400');
-            }
-        });
-
-        passwordInput.addEventListener('input', () => {
-            const isValid = validatePassword(passwordInput.value);
-            if (isValid) {
-                passwordError.classList.add('opacity-0');
-                passwordInput.classList.remove('border-red-400');
-                passwordInput.classList.add('border-teal-400');
-            } else {
-                passwordError.classList.remove('opacity-0');
-                passwordInput.classList.remove('border-teal-400');
-                passwordInput.classList.add('border-red-400');
-            }
-        });
-
-        // Form submission handler
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const isEmailValid = validateEmail(emailInput.value);
-            const isPasswordValid = validatePassword(passwordInput.value);
-
-            if (isEmailValid && isPasswordValid) {
-                // All validation passed, show success message
-                messageBox.classList.remove('hidden');
-                // In a real application, you would send this data to a server here
-                // e.g., using fetch() to a backend endpoint.
-                console.log('Login successful!');
-            } else {
-                // Show validation errors if they haven't been shown yet
-                if (!isEmailValid) {
-                    emailError.classList.remove('opacity-0');
-                    emailInput.classList.add('border-red-400');
-                }
-                if (!isPasswordValid) {
-                    passwordError.classList.remove('opacity-0');
-                    passwordInput.classList.add('border-red-400');
-                }
-            }
-        });
-
-        // Close button for the message box
-        closeButton.addEventListener('click', () => {
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const messageBox = document.getElementById('messageBox');
+            
+            // Clear previous error messages
+            emailError.classList.add('hidden');
+            passwordError.classList.add('hidden');
             messageBox.classList.add('hidden');
+
+            let isValid = true;
+
+            // Simple email validation
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.textContent = 'Please enter a valid email address.';
+                emailError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Password length validation
+            const password = passwordInput.value.trim();
+            if (password.length < 6) {
+                passwordError.textContent = 'Password must be at least 6 characters long.';
+                passwordError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Here you would handle the login logic, e.g., send data to a server.
+                // For this example, we'll just show a success message.
+                showMessage('Login successful! Redirecting to dashboard...', 'success');
+                // document.getElementById('loginForm').reset(); // Optional: reset form after success
+            } else {
+                showMessage('Please correct the errors and try again.', 'error');
+            }
         });
 
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden');
+            messageBox.classList.remove('bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
     </script>
-</body>
 
+</body>
 </html>
