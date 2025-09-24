@@ -125,7 +125,7 @@ function Landing() {
   return (
     <>
       <Header />
-      <section className="bg-slate-50">
+      <section className="bg-slate-50 h-[100vh] flex items-center">
         <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center px-4 py-16 lg:py-24">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 leading-tight">

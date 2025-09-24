@@ -25,7 +25,6 @@ const MedCard: React.FC<MedCardProps> = ({
   return (
     <div className="bg-slate-50 border border-slate-300 rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-xs mx-auto transition-transform duration-300 hover:scale-105">
       <div className="flex flex-col items-center text-center">
-        {/* Medication Image */}
         <img
           src={
             medication.imageUrl ||
@@ -35,10 +34,8 @@ const MedCard: React.FC<MedCardProps> = ({
           className="w-24 h-24 rounded-full object-cover mb-4 border-2 border-cyan-600"
         />
 
-        {/* Medication Name */}
         <h2 className="text-lg font-bold text-slate-800">{medication.name}</h2>
 
-        {/* Medication Details */}
         <div className="mt-2 text-center w-full">
           <p className="text-xs text-slate-600">
             {medication.dosage} | {medication.form}
@@ -50,7 +47,6 @@ const MedCard: React.FC<MedCardProps> = ({
 
         <hr className="w-full border-t border-slate-200 my-4" />
 
-        {/* Price and Stock Status */}
         <div className="flex justify-between items-center w-full mt-2">
           <span className="text-lg font-extrabold text-cyan-600">
             N${medication.price.toFixed(2)}

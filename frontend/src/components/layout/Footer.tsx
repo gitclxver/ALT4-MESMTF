@@ -1,6 +1,6 @@
 function Footer() {
     return (
-      <footer className="footer">
+      <footer className="footer bg-slate-50">
         <div className="container mx-auto text-center py-4">
           <p className="text-gray-600 text-sm">
             &copy; {new Date().getFullYear()} ALT4 MESMTF - All rights reserved
