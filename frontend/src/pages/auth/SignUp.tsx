@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 interface FormData {
@@ -92,76 +93,111 @@ const SignUp: React.FC = () => {
       minHeight: '100vh',
       padding: '20px',
       fontFamily: 'Arial, sans-serif',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      background: 'linear-gradient(135deg, #1a56db 0%, #0e4ba0 100%)'
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '400px',
+        maxWidth: '450px',
         backgroundColor: 'white',
-        borderRadius: '10px',
-        padding: '30px',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+        borderRadius: '15px',
+        padding: '40px',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        border: '1px solid #e0e7ff'
       }}>
+        {/* Header Section */}
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#333', marginBottom: '10px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '20px'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              backgroundColor: '#1a56db',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '15px'
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" viewBox="0 0 24 24">
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V7H9V5.5L3 7V9L9 10.5V12.5L3 14V16L9 17.5V21H15V17.5L21 16V14L15 12.5V10.5L21 9Z"/>
+              </svg>
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1a56db', margin: 0 }}>
+                MESMTF
+              </h1>
+              <p style={{ color: '#6b7280', fontSize: '12px', margin: 0 }}>
+                Expert System for Malaria & Typhoid Fever
+              </p>
+            </div>
+          </div>
+          
+          <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937', marginBottom: '10px' }}>
             Create Account
-          </h1>
-          <p style={{ color: '#666', fontSize: '14px' }}>Join Our Healthcare Revolution</p>
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: '16px' }}>
+            Join our AI-powered healthcare platform
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Name Input */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
-              First Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: `2px solid ${errors.name ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px',
-                transition: 'border-color 0.3s'
-              }}
-              placeholder="Enter your first name"
-            />
-            {errors.name && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.name}</p>
-            )}
-          </div>
+          {/* Name Inputs in Row */}
+          <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
+                First Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: `2px solid ${errors.name ? '#dc2626' : '#d1d5db'}`,
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  transition: 'border-color 0.3s'
+                }}
+                placeholder="Enter first name"
+              />
+              {errors.name && (
+                <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.name}</p>
+              )}
+            </div>
 
-          {/* Surname Input */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
-              Last Name
-            </label>
-            <input
-              type="text"
-              name="surname"
-              value={formData.surname}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: `2px solid ${errors.surname ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px'
-              }}
-              placeholder="Enter your last name"
-            />
-            {errors.surname && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.surname}</p>
-            )}
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="surname"
+                value={formData.surname}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: `2px solid ${errors.surname ? '#dc2626' : '#d1d5db'}`,
+                  borderRadius: '8px',
+                  fontSize: '14px'
+                }}
+                placeholder="Enter last name"
+              />
+              {errors.surname && (
+                <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.surname}</p>
+              )}
+            </div>
           </div>
 
           {/* Email Input */}
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
               Email Address
             </label>
             <input
@@ -172,21 +208,21 @@ const SignUp: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: `2px solid ${errors.email ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px'
+                border: `2px solid ${errors.email ? '#dc2626' : '#d1d5db'}`,
+                borderRadius: '8px',
+                fontSize: '14px'
               }}
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.email}</p>
+              <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.email}</p>
             )}
           </div>
 
           {/* Role Selection */}
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
-              Role
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
+              I am a
             </label>
             <select
               name="role"
@@ -195,24 +231,25 @@ const SignUp: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: `2px solid ${errors.role ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px',
+                border: `2px solid ${errors.role ? '#dc2626' : '#d1d5db'}`,
+                borderRadius: '8px',
+                fontSize: '14px',
                 backgroundColor: 'white'
               }}
             >
               <option value="">Select your role</option>
               <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
+              <option value="doctor">Healthcare Professional</option>
+              <option value="official">Ministry Official</option>
             </select>
             {errors.role && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.role}</p>
+              <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.role}</p>
             )}
           </div>
 
-          {/* Password Input */}
+          {/* Password Inputs */}
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
               Password
             </label>
             <input
@@ -223,20 +260,19 @@ const SignUp: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: `2px solid ${errors.password ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px'
+                border: `2px solid ${errors.password ? '#dc2626' : '#d1d5db'}`,
+                borderRadius: '8px',
+                fontSize: '14px'
               }}
-              placeholder="Enter your password"
+              placeholder="Create a password"
             />
             {errors.password && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.password}</p>
+              <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.password}</p>
             )}
           </div>
 
-          {/* Confirm Password Input */}
           <div style={{ marginBottom: '25px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
               Confirm Password
             </label>
             <input
@@ -247,14 +283,14 @@ const SignUp: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: `2px solid ${errors.confirmPassword ? '#ff4444' : '#ddd'}`,
-                borderRadius: '5px',
-                fontSize: '16px'
+                border: `2px solid ${errors.confirmPassword ? '#dc2626' : '#d1d5db'}`,
+                borderRadius: '8px',
+                fontSize: '14px'
               }}
               placeholder="Confirm your password"
             />
             {errors.confirmPassword && (
-              <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '5px' }}>{errors.confirmPassword}</p>
+              <p style={{ color: '#dc2626', fontSize: '12px', marginTop: '5px' }}>{errors.confirmPassword}</p>
             )}
           </div>
 
@@ -263,17 +299,18 @@ const SignUp: React.FC = () => {
             style={{
               width: '100%',
               padding: '15px',
-              backgroundColor: '#667eea',
+              backgroundColor: '#1a56db',
               color: 'white',
               border: 'none',
-              borderRadius: '5px',
+              borderRadius: '8px',
               fontSize: '16px',
-              fontWeight: 'bold',
+              fontWeight: '600',
               cursor: 'pointer',
-              transition: 'background-color 0.3s'
+              transition: 'background-color 0.3s',
+              marginBottom: '20px'
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a6fd8'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#667eea'}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0e4ba0'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#1a56db'}
           >
             Create Account
           </button>
@@ -281,23 +318,47 @@ const SignUp: React.FC = () => {
 
         {message && (
           <div style={{
-            marginTop: '20px',
             padding: '15px',
-            borderRadius: '5px',
-            backgroundColor: message.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: message.type === 'success' ? '#155724' : '#721c24',
-            border: `1px solid ${message.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
+            borderRadius: '8px',
+            backgroundColor: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#dc2626',
+            border: `1px solid ${message.type === 'success' ? '#a7f3d0' : '#fecaca'}`,
+            marginBottom: '20px',
+            fontSize: '14px'
           }}>
             {message.text}
           </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <p style={{ color: '#666', fontSize: '14px' }}>
+        <div style={{ textAlign: 'center', borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+          <p style={{ color: '#6b7280', fontSize: '14px' }}>
             Already have an account?{' '}
-            <a href="#" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+            <a 
+              href="/login" 
+              style={{ 
+                color: '#1a56db', 
+                textDecoration: 'none', 
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
               Sign In
             </a>
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '30px', 
+          padding: '15px',
+          backgroundColor: '#f8fafc',
+          borderRadius: '8px',
+          border: '1px solid #e2e8f0'
+        }}>
+          <p style={{ color: '#64748b', fontSize: '12px', margin: 0 }}>
+            An AI-powered Expert System for the Diagnosis and Management of<br />
+            Malaria and Typhoid Fever, empowering the Ministry of Health and Social Services
           </p>
         </div>
       </div>
