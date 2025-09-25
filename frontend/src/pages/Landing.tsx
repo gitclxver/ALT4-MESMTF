@@ -3,25 +3,11 @@ import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 
 import { useState, useEffect } from "react";
+import { CodeIcon } from "../utils/icons";
 
 const carouselItems = [
   {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-12 w-12 text-cyan-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M8 9l3 3-3 3m5 0h3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"
-        />
-      </svg>
-    ),
+    icon: <CodeIcon />,
     title: "AI-Powered Self Diagnosis",
     description:
       "Utilize Our AI Doctor to Self-Diagnose Symptoms of Malaria and Typhoid Fever with High Accuracy.",
@@ -117,7 +103,7 @@ function Landing() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, 5500);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
@@ -125,7 +111,7 @@ function Landing() {
   return (
     <>
       <Header />
-      <section className="bg-slate-50 h-[100vh] flex items-center">
+      <section className="bg-slate-50 flex items-center min-h-[87vh]">
         <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center px-4 py-16 lg:py-24">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 leading-tight">
@@ -154,61 +140,41 @@ function Landing() {
               >
                 Learn More
               </a>
+              
             </div>
           </div>
 
-          <div className="hidden lg:block">
-            <img
-              src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop"
-              alt="Medical Professional Analyzing Data on a Computer"
-              className="rounded-xl shadow-2xl"
-            />
-          </div>
-        </div>
-      </section>
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
+              How Our System Works
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+              A simple, three-step process to manage your health online.
+            </p>
 
-      <section id="about" className="bg-slate-50 py-16 lg:py-24">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
-            How Our System Works
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            A simple, three-step process to manage your health online.
-          </p>
-
-          <div className="mt-12 max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
-            {" "}
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-            >
-              {carouselItems.map((slide, index) => (
-                <div key={index} className="flex-shrink-0 w-full px-4">
-                  <div className="flex flex-col items-center">
-                    <div className="bg-cyan-100 p-4 rounded-full mb-6">
-                      {slide.icon}
+            <div className="mt-12 max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                >
+                  {carouselItems.map((slide, index) => (
+                    <div key={index} className="flex-shrink-0 w-full">
+                      <div className="flex flex-col items-center px-8">
+                        <div className="bg-cyan-100 p-4 rounded-full mb-6">
+                          {slide.icon}
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-800 text-center">
+                          {slide.title}
+                        </h3>
+                        <p className="mt-2 text-slate-600 text-center max-w-md">
+                          {slide.description}
+                        </p>
+                      </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-800">
-                      {slide.title}
-                    </h3>
-                    <p className="mt-2 text-slate-600">{slide.description}</p>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
-              {carouselItems.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    currentIndex === index
-                      ? "bg-cyan-600"
-                      : "bg-slate-300 hover:bg-slate-400"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
+              </div>
             </div>
           </div>
         </div>
