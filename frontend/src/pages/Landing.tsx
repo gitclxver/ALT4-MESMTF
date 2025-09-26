@@ -127,29 +127,25 @@ function Landing() {
               Social Services.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-center">
               <Link
                 to="/diagnostic"
                 className="bg-cyan-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-cyan-700 transition-transform transform hover:-translate-y-1"
               >
                 Self Diagnose Now
               </Link>
-              <a
-                href="#about"
-                className="bg-white text-cyan-600 font-semibold py-3 px-8 rounded-lg border border-slate-300 hover:bg-slate-100 transition-transform transform hover:-translate-y-1"
-              >
-                Learn More
-              </a>
-              
             </div>
           </div>
 
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
-              How Our System Works
+              <span>What Our System </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-600">
+                Offers
+              </span>
             </h2>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              A simple, three-step process to manage your health online.
+              Simple, Clean & Hassle Free HealthCare
             </p>
 
             <div className="mt-12 max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8 md:p-12 relative overflow-hidden">

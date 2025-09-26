@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs, orderBy, limit, doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, orderBy, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 // Appointment interfaces

@@ -112,11 +112,13 @@ function Pharmacy() {
   return (
     <>
       <Header />
-      <div className="flex flex-col lg:flex-row bg-slate-100 min-h-screen p-4 sm:p-8">
+      <div className="flex flex-col lg:flex-row bg-slate-50 min-h-screen p-4 sm:p-8">
         <div className="flex-1 lg:pr-8">
           <div className="mb-6">
             <h1 className="text-4xl font-extrabold text-slate-800">
-              E-Pharmacy
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-600">
+                E-Pharmacy
+              </span>
             </h1>
           </div>
 

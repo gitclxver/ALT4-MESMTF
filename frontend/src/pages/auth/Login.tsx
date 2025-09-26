@@ -20,8 +20,8 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
       // Navigation will be handled by useEffect when userData is loaded
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ const Login: React.FC = () => {
           <p className="text-center text-slate-600 mt-6">
             Don't have an account?{' '}
             <Link to="/signup" className="text-cyan-600 hover:underline font-medium">
-              Sign up here
+              Sign Up Here
             </Link>
           </p>
         </div>

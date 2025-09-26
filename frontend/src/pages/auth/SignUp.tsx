@@ -49,8 +49,8 @@ const SignUp: React.FC = () => {
     try {
       await register(formData);
       navigate('/login');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -248,7 +248,7 @@ const SignUp: React.FC = () => {
           <p className="text-center text-slate-600 mt-6">
             Already have an account?{' '}
             <Link to="/login" className="text-cyan-600 hover:underline font-medium">
-              Sign in here
+              Sign In Here
             </Link>
           </p>
         </div>
