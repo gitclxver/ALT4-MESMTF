@@ -1,414 +1,306 @@
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
-import { useState, useMemo, useEffect } from "react";
-import DoctorCard from "../../components/cards/DoctorCard";
-import type { Doctor } from "../../components/cards/DoctorCard";
-import type { Appointment } from "../../components/cards/DoctorCard";
-import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "../../utils/icons";
+﻿import React, { useState, useEffect } from 'react';
+import Header from '../../components/layout/Header';
+import Footer from '../../components/layout/Footer';
+import { useAuth } from '../../contexts/AuthContext';
+import { getAllDoctors, createAppointment } from '../../lib/firestore';
+import { StarIcon } from '../../utils/icons';
 
-const parseTime = (timeStr: string): number => {
-  const lower = timeStr.toLowerCase();
-  let hour = parseInt(lower.replace(/am|pm/g, "").trim());
-  if (lower.includes("pm") && hour !== 12) hour += 12;
-  if (lower.includes("am") && hour === 12) hour = 0;
-  return hour;
-};
+const Book = () => {
+  const { user } = useAuth();
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [appointmentForm, setAppointmentForm] = useState({
+    doctorId: '',
+    date: '',
+    time: '',
+    reason: ''
+  });
+  const [isBooking, setIsBooking] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-const generateSchedule = (
-  workingHours: string
-): { [date: string]: string[] } => {
-  const schedule: { [date: string]: string[] } = {};
-  const [startTimeStr, endTimeStr] = workingHours.split(" - ");
-  const startHour = parseTime(startTimeStr);
-  const endHour = parseTime(endTimeStr);
-
-  const today = new Date("2025-09-24T00:00:00");
-  const daysToGenerate = 45;
-
-  for (let i = 0; i < daysToGenerate; i++) {
-    const currentDate = new Date(today);
-    currentDate.setDate(today.getDate() + i);
-    const dayOfWeek = currentDate.getDay();
-
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      const dateString = currentDate.toISOString().split("T")[0];
-      const timeSlots: string[] = [];
-      for (let h = startHour; h < endHour; h++) {
-        const slotDate = new Date();
-        slotDate.setHours(h, 0, 0, 0);
-        timeSlots.push(
-          slotDate.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          })
-        );
-      }
-      if (timeSlots.length > 0) {
-        schedule[dateString] = timeSlots;
-      }
+  // Dummy doctors from diagnostic system
+  const dummyDoctors = [
+    {
+      id: 'dr-sarah-wilson',
+      name: 'Dr. Sarah Wilson',
+      specialty: 'General Physician',
+      rating: 4.8,
+      location: 'Downtown Medical Center',
+      description: 'Experienced general physician specializing in preventive care and chronic disease management.'
+    },
+    {
+      id: 'dr-michael-chen',
+      name: 'Dr. Michael Chen',
+      specialty: 'Cardiologist',
+      rating: 4.9,
+      location: 'Heart Care Clinic',
+      description: 'Leading cardiologist with expertise in heart disease prevention and treatment.'
+    },
+    {
+      id: 'dr-emma-davis',
+      name: 'Dr. Emma Davis',
+      specialty: 'Dermatologist',
+      rating: 4.7,
+      location: 'Skin Health Institute',
+      description: 'Board-certified dermatologist specializing in skin conditions and cosmetic procedures.'
+    },
+    {
+      id: 'dr-james-taylor',
+      name: 'Dr. James Taylor',
+      specialty: 'Neurologist',
+      rating: 4.8,
+      location: 'Brain & Spine Center',
+      description: 'Expert neurologist treating various neurological conditions and disorders.'
+    },
+    {
+      id: 'dr-lisa-anderson',
+      name: 'Dr. Lisa Anderson',
+      specialty: 'Orthopedic Surgeon',
+      rating: 4.6,
+      location: 'Sports Medicine Clinic',
+      description: 'Orthopedic surgeon specializing in sports injuries and joint replacement.'
+    },
+    {
+      id: 'dr-robert-martinez',
+      name: 'Dr. Robert Martinez',
+      specialty: 'Psychiatrist',
+      rating: 4.9,
+      location: 'Mental Health Center',
+      description: 'Compassionate psychiatrist helping patients with mental health and wellness.'
     }
-  }
-  return schedule;
-};
-
-const initialDoctorsData: Doctor[] = [
-  {
-    id: 1,
-    name: "Dr. Emily Carter",
-    specialty: "Cardiologist",
-    hospital: "Windhoek Central Hospital",
-    workingHours: "9am - 3pm",
-    satisfactionRate: 98,
-    avatarUrl: "",
-    schedule: {},
-  },
-  {
-    id: 2,
-    name: "Dr. Ben Hanson",
-    specialty: "Neurologist",
-    hospital: "Lady Pohamba Private Hospital",
-    workingHours: "10am - 6pm",
-    satisfactionRate: 95,
-    avatarUrl: "",
-    schedule: {},
-  },
-  {
-    id: 3,
-    name: "Dr. Olivia Chen",
-    specialty: "General Practitioner",
-    hospital: "Rhino Park Private Hospital",
-    workingHours: "8am - 4pm",
-    satisfactionRate: 99,
-    avatarUrl: "",
-    schedule: {},
-  },
-].map((doctor) => ({
-  ...doctor,
-  schedule: generateSchedule(doctor.workingHours),
-}));
-
-const initialAppointments: Appointment[] = [
-  {
-    id: 1,
-    doctorName: "Dr. Sarah Jenkins",
-    specialty: "Dermatologist",
-    date: "2025-09-15",
-    time: "10:00 AM",
-    status: "Past",
-  },
-];
-
-const CalendarView: React.FC<{
-  availableDates: string[];
-  onDateSelect: (date: string) => void;
-  selectedDate: string | null;
-}> = ({ availableDates, onDateSelect, selectedDate }) => {
-  const [currentDate, setCurrentDate] = useState(
-    new Date("2025-09-24T00:00:00")
-  );
-
-  const changeMonth = (amount: number) => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() + amount);
-      return newDate;
-    });
-  };
-
-  const daysInMonth = useMemo(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
-    const totalDays = new Date(year, month + 1, 0).getDate();
-    const days: (Date | null)[] = Array.from(
-      { length: firstDayOfMonth },
-      () => null
-    );
-    for (let day = 1; day <= totalDays; day++) {
-      days.push(new Date(year, month, day));
-    }
-    return days;
-  }, [currentDate]);
-
-  const dayIsAvailable = (day: Date | null) => {
-    if (!day) return false;
-    const dateString = day.toISOString().split("T")[0];
-    return availableDates.includes(dateString);
-  };
-
-  return (
-    <div className="bg-slate-50 p-4 rounded-lg">
-      <div className="flex justify-between items-center mb-4">
-        <button
-          onClick={() => changeMonth(-1)}
-          className="p-2 rounded-full hover:bg-slate-200"
-        >
-          <ChevronLeftIcon />
-        </button>
-        <h3 className="font-bold text-lg text-slate-700">
-          {currentDate.toLocaleString("default", {
-            month: "long",
-            year: "numeric",
-          })}
-        </h3>
-        <button
-          onClick={() => changeMonth(1)}
-          className="p-2 rounded-full hover:bg-slate-200"
-        >
-          <ChevronRightIcon />
-        </button>
-      </div>
-      <div className="grid grid-cols-7 gap-1 text-center text-sm">
-        {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
-          <div key={d} className="font-semibold text-slate-500">
-            {d}
-          </div>
-        ))}
-        {daysInMonth.map((day, index) => {
-          const isAvailable = dayIsAvailable(day);
-          const dateString = day ? day.toISOString().split("T")[0] : "";
-          const isSelected = selectedDate === dateString;
-          let buttonClass =
-            "w-9 h-9 flex items-center justify-center rounded-full";
-          if (isAvailable) {
-            buttonClass += isSelected
-              ? " bg-cyan-600 text-white"
-              : " bg-cyan-100 text-cyan-800 hover:bg-cyan-200 cursor-pointer";
-          } else {
-            buttonClass += " text-slate-300";
-          }
-          return (
-            <div key={index} className="py-1">
-              {day && (
-                <button
-                  onClick={() => isAvailable && onDateSelect(dateString)}
-                  disabled={!isAvailable}
-                  className={buttonClass}
-                >
-                  {day.getDate()}
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-function Book() {
-  const [doctors, setDoctors] = useState<Doctor[]>(initialDoctorsData);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(
-    doctors[0]
-  );
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(initialAppointments);
+  ];
 
   useEffect(() => {
-    if (selectedDoctor) {
-      const updatedDoctorInList = doctors.find(
-        (d) => d.id === selectedDoctor.id
-      );
-      setSelectedDoctor(updatedDoctorInList || null);
-    }
-  }, [doctors, selectedDoctor]);
-
-  const handleSelectDoctor = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
-    setSelectedDate(null);
-    setSelectedTime(null);
-  };
-
-  const handleBooking = () => {
-    if (!selectedDoctor || !selectedDate || !selectedTime) return;
-
-    const newAppointment: Appointment = {
-      id: appointments.length + 2,
-      doctorName: selectedDoctor.name,
-      specialty: selectedDoctor.specialty,
-      date: selectedDate,
-      time: selectedTime,
-      status: "Upcoming",
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        const firestoreDoctors = await getAllDoctors();
+        const allDoctors = [...firestoreDoctors, ...dummyDoctors];
+        setDoctors(allDoctors);
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+        setDoctors(dummyDoctors);
+      } finally {
+        setLoading(false);
+      }
     };
-    setAppointments((prev) =>
-      [...prev, newAppointment].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      )
-    );
 
-    setDoctors((prevDoctors) =>
-      prevDoctors.map((doc) => {
-        if (doc.id === selectedDoctor.id) {
-          const newSchedule = { ...doc.schedule };
-          newSchedule[selectedDate] = newSchedule[selectedDate].filter(
-            (time) => time !== selectedTime
-          );
-          if (newSchedule[selectedDate].length === 0) {
-            delete newSchedule[selectedDate];
-          }
-          return { ...doc, schedule: newSchedule };
-        }
-        return doc;
-      })
-    );
+    fetchDoctors();
+  }, []);
 
-    setSelectedTime(null);
+  const handleDoctorSelect = (doctor) => {
+    setSelectedDoctor(doctor);
+    setAppointmentForm(prev => ({ ...prev, doctorId: doctor.id }));
   };
 
-  const upcomingAppointments = appointments.filter(
-    (a) => a.status === "Upcoming"
-  );
-  const pastAppointments = appointments.filter((a) => a.status === "Past");
-  const availableDates = selectedDoctor
-    ? Object.keys(selectedDoctor.schedule)
-    : [];
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setAppointmentForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBookAppointment = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setIsBooking(true);
+    try {
+      await createAppointment({
+        patientId: user.uid,
+        patientName: user.displayName || 'Patient',
+        doctorId: appointmentForm.doctorId,
+        doctorName: selectedDoctor?.name || '',
+        date: appointmentForm.date,
+        time: appointmentForm.time,
+        type: appointmentForm.reason,
+        status: 'upcoming',
+        urgency: 'medium',
+        notes: appointmentForm.reason
+      });
+
+      setShowSuccess(true);
+      setAppointmentForm({ doctorId: '', date: '', time: '', reason: '' });
+      setSelectedDoctor(null);
+      
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      alert('Failed to book appointment. Please try again.');
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <StarIcon
+        key={index}
+        className={`w-4 h-4 ${
+          index < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'
+        }`}
+      />
+    ));
+  };
+
+  if (loading) {
+    return (
+      <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
+        <Header />
+        <div className='container mx-auto px-4 py-8'>
+          <div className='flex justify-center items-center h-64'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
       <Header />
-      <div className="min-h-screen bg-slate-50 font-sans p-4 sm:p-6 lg:p-8">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="col-span-1 lg:col-span-1 space-y-4">
-              <h1 className="text-3xl font-extrabold text-slate-800 pb-2 border-b-2">
-                Our Specialists
-              </h1>
-              {doctors.map((doc) => (
-                <DoctorCard
-                  key={doc.id}
-                  doctor={doc}
-                  onSelect={handleSelectDoctor}
-                  isSelected={selectedDoctor?.id === doc.id}
-                />
+      
+      <div className='container mx-auto px-4 py-8'>
+        {/* Header Section */}
+        <div className='text-center mb-8'>
+          <h1 className='text-4xl font-bold text-gray-800 mb-4'>Book an Appointment</h1>
+          <p className='text-lg text-gray-600'>Choose from our qualified healthcare professionals</p>
+        </div>
+
+        {/* Success Message */}
+        {showSuccess && (
+          <div className='mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg'>
+            <p className='text-center font-medium'>Appointment booked successfully! We'll contact you soon with confirmation details.</p>
+          </div>
+        )}
+
+        <div className='grid lg:grid-cols-3 gap-8'>
+          {/* Doctors List */}
+          <div className='lg:col-span-2'>
+            <h2 className='text-2xl font-semibold text-gray-800 mb-6'>Available Doctors</h2>
+            <div className='grid md:grid-cols-2 gap-6'>
+              {doctors.map((doctor) => (
+                <div
+                  key={doctor.id}
+                  className={`bg-white rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-xl border-2 ${
+                    selectedDoctor?.id === doctor.id ? 'border-blue-500 bg-blue-50' : 'border-transparent'
+                  }`}
+                  onClick={() => handleDoctorSelect(doctor)}
+                >
+                  <div className='flex items-start space-x-4'>
+                    <div className='w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl'>
+                      {doctor.name?.split(' ').map(n => n[0]).join('') || 'DR'}
+                    </div>
+                    <div className='flex-1'>
+                      <h3 className='text-xl font-semibold text-gray-800 mb-1'>{doctor.name}</h3>
+                      <p className='text-blue-600 font-medium mb-2'>{doctor.specialty}</p>
+                      {doctor.rating && (
+                        <div className='flex items-center mb-2'>
+                          {renderStars(doctor.rating)}
+                          <span className='ml-2 text-gray-600 text-sm'>({doctor.rating})</span>
+                        </div>
+                      )}
+                      <p className='text-gray-600 text-sm mb-2'>{doctor.location}</p>
+                      <p className='text-gray-700 text-sm'>{doctor.description}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
+          </div>
 
-            <div className="col-span-1 lg:col-span-1">
+          {/* Appointment Form */}
+          <div>
+            <div className='bg-white rounded-xl shadow-lg p-6 sticky top-4'>
+              <h2 className='text-2xl font-semibold text-gray-800 mb-6'>Book Appointment</h2>
+              
               {selectedDoctor ? (
-                <div className="bg-white rounded-xl shadow-md p-6 sticky top-8">
-                  <h2 className="text-2xl font-bold text-slate-800">
-                    Book with {selectedDoctor.name}
-                  </h2>
-                  <p className="text-md text-slate-500 mb-6">
-                    Select a date and time for your appointment.
-                  </p>
+                <form onSubmit={handleBookAppointment} className='space-y-4'>
+                  <div className='bg-blue-50 p-4 rounded-lg'>
+                    <h3 className='font-semibold text-gray-800'>{selectedDoctor.name}</h3>
+                    <p className='text-blue-600 text-sm'>{selectedDoctor.specialty}</p>
+                  </div>
 
-                  <CalendarView
-                    availableDates={availableDates}
-                    onDateSelect={setSelectedDate}
-                    selectedDate={selectedDate}
-                  />
+                  <div>
+                    <label htmlFor='date' className='block text-sm font-medium text-gray-700 mb-2'>
+                      Preferred Date
+                    </label>
+                    <input
+                      type='date'
+                      id='date'
+                      name='date'
+                      value={appointmentForm.date}
+                      onChange={handleInputChange}
+                      min={new Date().toISOString().split('T')[0]}
+                      required
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                    />
+                  </div>
 
-                  {selectedDate && (
-                    <div className="mt-6">
-                      <label className="font-semibold text-slate-600">
-                        Available Times for{" "}
-                        {new Date(
-                          selectedDate + "T00:00:00"
-                        ).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </label>
-                      <div className="grid grid-cols-3 gap-2 mt-2 mb-6">
-                        {selectedDoctor.schedule[selectedDate]?.map((time) => (
-                          <button
-                            key={time}
-                            onClick={() => setSelectedTime(time)}
-                            className={`p-2 rounded-lg text-sm font-semibold transition-colors ${
-                              selectedTime === time
-                                ? "bg-cyan-600 text-white"
-                                : "bg-slate-100 hover:bg-slate-200"
-                            }`}
-                          >
-                            {time}
-                          </button>
-                        ))}
-                      </div>
-                      <button
-                        onClick={handleBooking}
-                        disabled={!selectedTime}
-                        className="w-full bg-cyan-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-cyan-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all"
-                      >
-                        Confirm Booking
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  <div>
+                    <label htmlFor='time' className='block text-sm font-medium text-gray-700 mb-2'>
+                      Preferred Time
+                    </label>
+                    <select
+                      id='time'
+                      name='time'
+                      value={appointmentForm.time}
+                      onChange={handleInputChange}
+                      required
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                    >
+                      <option value=''>Select Time</option>
+                      <option value='09:00'>9:00 AM</option>
+                      <option value='10:00'>10:00 AM</option>
+                      <option value='11:00'>11:00 AM</option>
+                      <option value='14:00'>2:00 PM</option>
+                      <option value='15:00'>3:00 PM</option>
+                      <option value='16:00'>4:00 PM</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor='reason' className='block text-sm font-medium text-gray-700 mb-2'>
+                      Reason for Visit
+                    </label>
+                    <textarea
+                      id='reason'
+                      name='reason'
+                      value={appointmentForm.reason}
+                      onChange={handleInputChange}
+                      required
+                      rows={3}
+                      placeholder='Please describe your symptoms or reason for the appointment...'
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none'
+                    />
+                  </div>
+
+                  <button
+                    type='submit'
+                    disabled={isBooking}
+                    className='w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed'
+                  >
+                    {isBooking ? 'Booking...' : 'Book Appointment'}
+                  </button>
+                </form>
               ) : (
-                <div className="flex items-center justify-center h-full bg-slate-100 rounded-xl p-8 text-center sticky top-8">
-                  <p className="text-slate-500 font-semibold text-lg">
-                    Select a doctor to see their schedule
-                  </p>
+                <div className='text-center py-8'>
+                  <div className='w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4'>
+                    <svg className='w-8 h-8 text-gray-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
+                    </svg>
+                  </div>
+                  <p className='text-gray-600'>Select a doctor to book an appointment</p>
                 </div>
               )}
-            </div>
-
-            <div className="col-span-1 lg:col-span-1 space-y-6">
-              <h1 className="text-3xl font-extrabold text-slate-800 pb-2 border-b-2">
-                My Appointments
-              </h1>
-              <div className="bg-white rounded-xl shadow-md p-5">
-                <h3 className="font-bold text-lg text-slate-700 mb-3">
-                  Upcoming
-                </h3>
-                <div className="space-y-3">
-                  {upcomingAppointments.length > 0 ? (
-                    upcomingAppointments.map((app) => (
-                      <div
-                        key={app.id}
-                        className="bg-cyan-50 border border-cyan-200 p-3 rounded-lg"
-                      >
-                        <p className="font-bold text-cyan-800">
-                          {app.doctorName}
-                        </p>
-                        <p className="text-sm text-cyan-700">{app.specialty}</p>
-                        <div className="flex items-center mt-2 text-sm text-cyan-900">
-                          <CalendarIcon /> {app.date} at {app.time}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-slate-500 text-sm">
-                      No upcoming appointments.
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="bg-white rounded-xl shadow-md p-5">
-                <h3 className="font-bold text-lg text-slate-700 mb-3">Past</h3>
-                <div className="space-y-3">
-                  {pastAppointments.length > 0 ? (
-                    pastAppointments.map((app) => (
-                      <div key={app.id} className="bg-slate-100 p-3 rounded-lg">
-                        <p className="font-bold text-slate-600">
-                          {app.doctorName}
-                        </p>
-                        <p className="text-sm text-slate-500">
-                          {app.specialty}
-                        </p>
-                        <div className="flex items-center mt-2 text-sm text-slate-500">
-                          <CalendarIcon /> {app.date} at {app.time}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-slate-500 text-sm">
-                      No past appointments.
-                    </p>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
+
       <Footer />
-    </>
+    </div>
   );
-}
+};
 
 export default Book;

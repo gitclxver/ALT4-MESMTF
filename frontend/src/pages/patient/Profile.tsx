@@ -1,7 +1,10 @@
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PlusIcon, CheckCircleIcon, ClipboardListIcon, PillIcon, StethoscopeIcon, BrainIcon } from "../../utils/icons";
+import { useAuth } from "../../contexts/AuthContext";
+import { getPatientDiagnoses, getPatientAppointments, getPatientMedicalRecords } from "../../lib/firestore";
+import type { Patient as UserPatient } from "../../types/user";
 
 interface Patient {
   name: string;
